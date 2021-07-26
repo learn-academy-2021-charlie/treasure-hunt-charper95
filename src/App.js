@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import './App.css'
 import Square from './components/Square'
+import Counter from './components/Counter'
+import PlayAgain from './components/PlayAgain'
 
 class App extends Component{
   constructor(props){
@@ -8,7 +10,8 @@ class App extends Component{
     this.state = {
       board: ["?", "?", "?", "?", "?", "?", "?", "?", "?"],
       treasureLocation: null,
-      bombLocation: null
+      bombLocation: null,
+      counter: 5
     }
   }
 
@@ -21,15 +24,35 @@ class App extends Component{
 
   handleGamePlay = (index) => {
     const {board} = this.state
+
+    if(this.state.counter >= 1) {
+      this.setState({counter: this.state.counter - 1})
+    }
+
     if(index === this.state.treasureLocation){
       board[index] = "💎"
       this.setState({board: board})
+      window.setTimeout(() => {
+        alert("You Win!");
+        window.location.reload(true);
+      }, 500)
     } else if (index === this.state.bombLocation){
       board[index] = "💣"
       this.setState({board: board})
+      window.setTimeout(() => {
+        alert("You Lose!");
+        window.location.reload(true);
+      }, 500)
     } else {
       board[index] = "🌴"
       this.setState({board: board})
+    }
+
+    if(this.state.counter === 1 && this.state.treasureLocation !== "💎" && this.state.bombLocation !== "💣") {
+      window.setTimeout(() => {
+        alert("You Lose!");
+        window.location.reload(true);
+      }, 500)
     }
   }
 
@@ -49,6 +72,14 @@ class App extends Component{
               />
             )
           })}
+        </div>
+        <div>
+          <Counter 
+            counter={this.state.counter}
+          />
+        </div>
+        <div>
+          <PlayAgain/>
         </div>
       </>
     )
